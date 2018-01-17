@@ -129,6 +129,7 @@ Hello Template Text
 
 <div>
 % param country => 'germany' unless param 'country';
+
 <%= radio_button 'country' => 'germany' %> Germany
 <%= radio_button 'country' => 'france'  %> France
 <%= radio_button 'country' => 'uk'      %> UK
