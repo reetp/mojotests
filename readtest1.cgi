@@ -42,7 +42,18 @@ get '/' => sub {
         # This will ONLY stash the last value and not an array.
         $mojo->stash( network => $network, netmask => $netmask );
 
+        # This produces an array something like this:
+        # ('fish', 'carrot', 'egg', 'spoon', 'banana')
         my @stuff = qw ( fish carrot egg spoon banana );
+
+        # Still not sure how to do this
+        # To select a default value we have to get an array more like this (just demo stuff)
+        # [[Germany => 'de', selected => 'selected'], [English => 'en'], 'us']
+        # This should give us something like
+        # <option selected="selected" value="de">Germany</option>
+        # Either need to setup the array differently, or modify the select_field template line
+        # Probably the latter
+
         $mojo->stash( 'stuff' => \@stuff );
 
     }
@@ -70,7 +81,9 @@ post '/agent' => sub {
     my $host = $c->req->url->to_abs->host;
     my $ua   = $c->req->headers->user_agent;
     my $data = $c->param('networks');
-    $c->render( text => "Request by $ua reached $host. <br />Form data is $data" );
+    my $pass = $c->param('pass');
+    my $radio= $c->param('country');
+    $c->render( text => "Request by $ua reached $host. <br />Form data is $data <br /> Country is $radio <br />Pass is $pass");
 
 };
 
@@ -108,10 +121,26 @@ Hello Template Text
     </tbody></table>
 
 <form name="networks" action="./readtest1.cgi/agent" method="POST">
-% param (label => 'fish');
 
+
+<div>
 <%= select_field 'networks' => [ @{ stash('stuff') }], id=> 'dropdown' %>
+</div>
+
+<div>
+% param country => 'germany' unless param 'country';
+<%= radio_button 'country' => 'germany' %> Germany
+<%= radio_button 'country' => 'france'  %> France
+<%= radio_button 'country' => 'uk'      %> UK
+</div>
+
+<div>
+Password
+<%= password_field 'pass', id => 'foo' %>
+<br />
+</div>
 <input type="submit" value="Submit">
+
 </form>
 
 <br /><br />
