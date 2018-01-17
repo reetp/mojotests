@@ -69,7 +69,8 @@ post '/agent' => sub {
     my $c    = shift;
     my $host = $c->req->url->to_abs->host;
     my $ua   = $c->req->headers->user_agent;
-    $c->render( text => "Request by $ua reached $host." );
+    my $data = $c->param('networks');
+    $c->render( text => "Request by $ua reached $host. <br />Form data is $data" );
 
 };
 
